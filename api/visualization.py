@@ -11,7 +11,7 @@ def sample():
     return render_template('chart.html', img=img)
 
 
-@visual.route('/water', methods=['GET'])
+@visual.route('/water_potability', methods=['GET'])
 def water():
     img = process_csv_data()
     return render_template('chart.html', img=img)

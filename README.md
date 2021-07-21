@@ -26,7 +26,7 @@ These instructions will get you building and running the project on your local m
 http://localhost:8080/sample
 http://localhost:8080/sample/hello
 http://localhost:8080/visual/sample
-http://localhost:8080/visual/water_poptability
+http://localhost:8080/visual/water_potability
 http://localhost:8080/classifier/dogcat
 ```
 
