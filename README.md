@@ -25,8 +25,9 @@ These instructions will get you building and running the project on your local m
 ```bash
 http://localhost:8080/sample
 http://localhost:8080/sample/hello
-http://localhost:8080/dv/sample
-http://localhost:8080/dv/water
+http://localhost:8080/visual/sample
+http://localhost:8080/visual/water_poptability
+http://localhost:8080/classifier/dogcat
 ```
 
 ## Run for production
