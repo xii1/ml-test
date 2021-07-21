@@ -2,3 +2,6 @@ flask
 numpy
 pandas
 matplotlib
+scikit-learn
+tensorflow
+Pillow
