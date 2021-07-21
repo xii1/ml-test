@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   ai-service:
-    image: ml-test
+    image: ghcr.io/xii1/ml-test:$AI_SERVICE_TAG
     ports:
       - "8080"
     restart: always
