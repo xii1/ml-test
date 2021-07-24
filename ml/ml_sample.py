@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-# import shap
+import shap
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split, validation_curve, learning_curve, GridSearchCV
@@ -36,9 +36,11 @@ def process():
     vot = train_with_ensemble(models, x_train, y_train, x_test, y_test)
     models['Ensemble Voting'] = vot
 
+    # auc curve comparison
     show_auc_curve_of_models(models, x_test, y_test)
 
-    # explain_model(knn, x_test[:5])
+    # choose the best of model & use SHAP explain prediction
+    explain_model(rf, x_train, x_test)
 
 
 def preprocess(data):
@@ -363,10 +365,12 @@ def calc_learning_curve(model, cv, x_train, y_train):
     return sizes, mean_train_score, mean_test_score
 
 
-def explain_model(model, x_test):
-    explainer = shap.KernelExplainer(model.predict_proba, x_test)
-    shap_values = explainer.shap_values(x_test)
+def explain_model(model, x_train, x_test):
+    explainer = shap.Explainer(lambda x: model.predict_proba(x)[:, 1], x_train)
+    shap_values = explainer(x_test)
+    shap.summary_plot(shap_values, x_test)
     shap.plots.waterfall(shap_values[0])
+    shap.plots.bar(shap_values)
 
 
 def show_confusion_matrix(model, x_train, y_train, x_test, y_test):
