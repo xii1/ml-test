@@ -29,9 +29,10 @@ def process():
     mlp = train_with_nn(x_train, y_train, x_test, y_test)
     gnb = train_with_naive_bayes(x_train, y_train, x_test, y_test)
     rf = train_with_random_forest(x_train, y_train, x_test, y_test)
-    # automl = train_with_automl(x_train, y_train, x_test, y_test)
+    automl = train_with_automl(x_train, y_train, x_test, y_test)
 
-    models = dict({'KNN': knn, 'SVM': svm, 'Decision Tree': dtree, 'MLP': mlp, 'Naive Bayes': gnb, 'Random Forest': rf})
+    models = dict({'KNN': knn, 'SVM': svm, 'Decision Tree': dtree, 'MLP': mlp,
+                   'Naive Bayes': gnb, 'Random Forest': rf, 'AutoML': automl})
 
     vot = train_with_ensemble(models, x_train, y_train, x_test, y_test)
     models['Ensemble Voting'] = vot
@@ -306,7 +307,7 @@ def train_with_ensemble(models, x_train, y_train, x_test, y_test):
 def train_with_automl(x_train, y_train, x_test, y_test):
     print("---Train with AutoML---")
 
-    automl = autosklearn.classification.AutoSklearnClassifier()
+    automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=60)
     automl.fit(x_train, y_train)
     print("Accuracy:", automl.score(x_test, y_test))
 
