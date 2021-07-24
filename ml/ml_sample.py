@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 # import shap
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split, validation_curve, learning_curve, GridSearchCV
 from sklearn.naive_bayes import GaussianNB
@@ -32,6 +32,10 @@ def process():
     # automl = train_with_automl(x_train, y_train, x_test, y_test)
 
     models = dict({'KNN': knn, 'SVM': svm, 'Decision Tree': dtree, 'MLP': mlp, 'Naive Bayes': gnb, 'Random Forest': rf})
+
+    vot = train_with_ensemble(models, x_train, y_train, x_test, y_test)
+    models['Ensemble Voting'] = vot
+
     show_auc_curve_of_models(models, x_test, y_test)
 
     # explain_model(knn, x_test[:5])
@@ -283,6 +287,20 @@ def train_with_random_forest(x_train, y_train, x_test, y_test):
     return best_estimator
 
 
+def train_with_ensemble(models, x_train, y_train, x_test, y_test):
+    print("---Train with Voting Classifier---")
+
+    estimators = []
+    for name in models:
+        estimators.append([name, models[name]])
+
+    vot = VotingClassifier(estimators=estimators, voting='soft')
+    vot.fit(x_train, y_train)
+    print("Accuracy:", vot.score(x_test, y_test))
+
+    return vot
+
+
 def train_with_automl(x_train, y_train, x_test, y_test):
     print("---Train with AutoML---")
 
@@ -311,12 +329,6 @@ def show_auc_curve_of_models(models, x_test, y_test):
 
     plt.plot([0, 1], [0, 1], color='navy', linestyle='--')
     show(plt, "AUC Curve", "False Positive Rate", "True Positive Rate")
-
-
-def explain_model(model, x_test):
-    explainer = shap.KernelExplainer(model.predict_proba, x_test)
-    shap_values = explainer.shap_values(x_test)
-    shap.plots.waterfall(shap_values[0])
 
 
 def grid_search(model, params, cv, x_train, y_train):
@@ -349,6 +361,12 @@ def calc_learning_curve(model, cv, x_train, y_train):
     mean_test_score = np.mean(test_score, axis=1)
 
     return sizes, mean_train_score, mean_test_score
+
+
+def explain_model(model, x_test):
+    explainer = shap.KernelExplainer(model.predict_proba, x_test)
+    shap_values = explainer.shap_values(x_test)
+    shap.plots.waterfall(shap_values[0])
 
 
 def show_confusion_matrix(model, x_train, y_train, x_test, y_test):
