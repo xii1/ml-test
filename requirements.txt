@@ -2,6 +2,10 @@ flask
 numpy
 pandas
 matplotlib
+seaborn
 scikit-learn
 tensorflow
 Pillow
+auto-sklearn
+shap
+ipython
