@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import shap
+from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split, validation_curve, learning_curve, GridSearchCV
@@ -43,6 +44,14 @@ def process():
     # choose the best of model & use SHAP explain prediction
     explain_model(rf, x_train, x_test)
 
+    pca = PCA(n_components=3)
+    x_train_pca = pca.fit_transform(x_train[x_train.columns])
+    x_test_pca = pca.transform(x_test[x_test.columns])
+    pca = train_with_knn(x_train_pca, y_train, x_test_pca, y_test)
+
+    # performance comparison all of models
+    show_performance_comparison(models, x_test, y_test, pca, x_test_pca)
+
 
 def preprocess(data):
     data = data.drop(columns=['lunch'])
@@ -63,12 +72,12 @@ def encode_data(data):
 
 
 def prepare_data(data):
-    x = data.values[:, :7]
-    y = data.values[:, 7]
+    x = data.iloc[:, :7]
+    y = data.iloc[:, 7]
 
     # normalize data
     mms = MinMaxScaler()
-    x = mms.fit_transform(x)
+    x[x.columns] = mms.fit_transform(x[x.columns])
 
     # split dataset into train, test (80%, 20%)
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=25)
@@ -105,7 +114,7 @@ def train_with_knn(x_train, y_train, x_test, y_test):
     show(plt, "Learning Curve with KNN", "Training Set Size", "Accuracy")
 
     # confusion matrix for testing the best set of hyper parameters above
-    show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
+    # show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
 
     return best_estimator
 
@@ -148,7 +157,7 @@ def train_with_svm(x_train, y_train, x_test, y_test):
     show(plt, "Learning Curve with SVM", "Training Set Size", "Accuracy")
 
     # confusion matrix for testing the best set of hyper parameters above
-    show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
+    # show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
 
     return best_estimator
 
@@ -182,7 +191,7 @@ def train_with_dtree(x_train, y_train, x_test, y_test):
     show(plt, "Learning Curve with Decision Tree", "Training Set Size", "Accuracy")
 
     # confusion matrix for testing the best set of hyper parameters above
-    show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
+    # show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
 
     return best_estimator
 
@@ -217,7 +226,7 @@ def train_with_nn(x_train, y_train, x_test, y_test):
     show(plt, "Learning Curve with MLP", "Training Set Size", "Accuracy")
 
     # confusion matrix for testing the best set of hyper parameters above
-    show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
+    # show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
 
     return best_estimator
 
@@ -251,7 +260,7 @@ def train_with_naive_bayes(x_train, y_train, x_test, y_test):
     show(plt, "Learning Curve with Naive Bayes", "Training Set Size", "Accuracy")
 
     # confusion matrix for testing the best set of hyper parameters above
-    show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
+    # show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
 
     return best_estimator
 
@@ -285,7 +294,7 @@ def train_with_random_forest(x_train, y_train, x_test, y_test):
     show(plt, "Learning Curve with Random Forest", "Training Set Size", "Accuracy")
 
     # confusion matrix for testing the best set of hyper parameters above
-    show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
+    # show_confusion_matrix(best_estimator, x_train, y_train, x_test, y_test)
 
     return best_estimator
 
@@ -307,7 +316,7 @@ def train_with_ensemble(models, x_train, y_train, x_test, y_test):
 def train_with_automl(x_train, y_train, x_test, y_test):
     print("---Train with AutoML---")
 
-    automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=60)
+    automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=30)
     automl.fit(x_train, y_train)
     print("Accuracy:", automl.score(x_test, y_test))
 
@@ -372,6 +381,17 @@ def explain_model(model, x_train, x_test):
     shap.summary_plot(shap_values, x_test)
     shap.plots.waterfall(shap_values[0])
     shap.plots.bar(shap_values)
+
+
+def show_performance_comparison(models, x_test, y_test, pca, x_test_pca):
+    scores = dict((k, v.score(x_test, y_test)) for k, v in models.items())
+    scores['KNN with PCA'] = pca.score(x_test_pca, y_test)
+
+    plt.bar(list(scores.keys()), list(scores.values()))
+    plt.title("Performance comparison")
+    plt.xlabel("Model")
+    plt.ylabel("Accuracy Score")
+    plt.show()
 
 
 def show_confusion_matrix(model, x_train, y_train, x_test, y_test):
