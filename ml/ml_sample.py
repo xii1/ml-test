@@ -44,9 +44,10 @@ def process():
     # choose the best of model & use SHAP explain prediction
     explain_model(rf, x_train, x_test)
 
+    # apply PCA
     pca = PCA(n_components=3)
-    x_train_pca = pca.fit_transform(x_train[x_train.columns])
-    x_test_pca = pca.transform(x_test[x_test.columns])
+    x_train_pca = pca.fit_transform(x_train)
+    x_test_pca = pca.transform(x_test)
     pca = train_with_knn(x_train_pca, y_train, x_test_pca, y_test)
 
     # performance comparison all of models
