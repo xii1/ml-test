@@ -1,12 +1,23 @@
 version: "3.9"
 services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379"
+    networks:
+      - ml
+
   ai-service:
     image: ghcr.io/xii1/ml-test:$AI_SERVICE_TAG
+    volumes:
+      - pre_trained:/app/pre_trained_models
     ports:
       - "8080"
     restart: always
     networks:
       - ml
+    depends_on:
+      - redis
 
   load-balancer:
     image: nginx:latest
@@ -21,3 +32,5 @@ services:
 
 networks:
   ml:
+volumes:
+  pre_trained:

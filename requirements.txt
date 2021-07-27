@@ -1,11 +1,13 @@
 flask
+flask-caching
+redis
 numpy
 pandas
 matplotlib
 seaborn
 scikit-learn
 tensorflow
-Pillow
+pillow
 auto-sklearn
 shap
 ipython
