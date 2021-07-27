@@ -10,7 +10,7 @@ services:
   ai-service:
     image: ghcr.io/xii1/ml-test:$AI_SERVICE_TAG
     volumes:
-      - pre_trained:/app/pre_trained_models
+      - trained_models:/app/trained_models
     ports:
       - "8080"
     restart: always
@@ -33,4 +33,4 @@ services:
 networks:
   ml:
 volumes:
-  pre_trained:
+  trained_models:
