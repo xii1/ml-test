@@ -1,3 +1,5 @@
+import pandas as pd
+
 from __init__ import cache, db
 
 import random
@@ -25,4 +27,6 @@ def get_random():
 
 @sample.route('/data', methods=['GET'])
 def get_data():
-    return jsonify({'Count': db.students.count()})
+    data = list(db.students.find({}, {'_id': False}))
+    print(pd.DataFrame(data).shape)
+    return jsonify({'Count': db.students.count(), 'data': data})
