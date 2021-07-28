@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 from tensorflow import keras
 
-model = keras.models.load_model('pre_trained_models/classification/dog_cat.h5')
+model = keras.models.load_model('trained_models/classification/dog_cat.h5')
 
 
 def predict_dog_cat(img):
