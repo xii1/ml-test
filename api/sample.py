@@ -1,4 +1,4 @@
-from __init__ import cache
+from __init__ import cache, db
 
 import random
 from flask import Blueprint, jsonify, render_template
@@ -17,7 +17,12 @@ def home():
     return render_template('index.html')
 
 
-@sample.route("/random", methods=['GET'])
+@sample.route('/random', methods=['GET'])
 @cache.cached(timeout=300, key_prefix='cache_rand')
 def get_random():
     return jsonify({'Number': random.randint(0, 100000)})
+
+
+@sample.route('/data', methods=['GET'])
+def get_data():
+    return jsonify({'Count': db.students.count()})
