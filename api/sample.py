@@ -1,10 +1,8 @@
-import pandas as pd
-
-from __init__ import cache, db
-
 import random
+
 from flask import Blueprint, jsonify, render_template
 
+from __init__ import cache, db
 
 sample = Blueprint('sample', __name__)
 
@@ -28,5 +26,4 @@ def get_random():
 @sample.route('/data', methods=['GET'])
 def get_data():
     data = list(db.students.find({}, {'_id': False}))
-    print(pd.DataFrame(data).shape)
     return jsonify({'Count': db.students.count(), 'data': data})

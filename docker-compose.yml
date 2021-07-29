@@ -18,7 +18,9 @@ services:
       - ml
     depends_on:
       - mongodb
-    command: bash -c "mongoimport -h mongodb -u mongo -p mongo --authenticationDatabase admin -d samples -c students --type csv --headerline --drop /data-import/students_performance.csv"
+    command: bash -c "
+      mongoimport -h mongodb -u mongo -p mongo --authenticationDatabase admin -d samples -c students --type csv --headerline --drop /data-import/students_performance.csv
+      && mongoimport -h mongodb -u mongo -p mongo --authenticationDatabase admin -d samples -c tmdb_movies --type csv --headerline --drop /data-import/movies/tmdb_movies_data.csv"
 
   redis:
     image: redis:latest
