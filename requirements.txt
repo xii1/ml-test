@@ -7,8 +7,10 @@ pandas
 matplotlib
 seaborn
 scikit-learn
+scikit-surprise
 tensorflow
 pillow
 auto-sklearn
 shap
 ipython
+dill
