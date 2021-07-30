@@ -105,4 +105,4 @@ def get_top_recommended_movies(user_id):
     if data.size == 0:
         return jsonify([])
 
-    return get_n_recommended_movies_for_user(user_id, top, data).to_json(orient='records')
+    return get_n_recommended_movies_for_user(int(user_id), top, data).to_json(orient='records')
