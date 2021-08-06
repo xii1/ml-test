@@ -5,10 +5,45 @@
     <title>File Upload</title>
 </head>
 <body>
-    <h1>File Upload</h1>
+    <h1>Image Upload</h1>
     <form method="POST" action="{{url}}" enctype="multipart/form-data">
-        <p><input type="file" name="file" accept="image/*"></p>
-        <p><input type="submit" value="Submit"></p>
+        <div align="left">
+            <img id="imageView" src="#" width="30%" height="auto">
+            <h4>Copy & Paste the image or Choose image file...</h4>
+            <p><input id="imageFile" type="file" name="file" accept="image/*"></p>
+        </div>
+        <p><input id="submit" type="submit" value="Submit" disabled></p>
     </form>
+
+    <script>
+        document.onpaste = function(pasteEvent) {
+            var item = pasteEvent.clipboardData.items[0];
+
+            if (item.type.indexOf("image") === 0)
+            {
+                var blob = item.getAsFile();
+
+                dt = new ClipboardEvent("").clipboardData || new DataTransfer();
+                dt.items.add(blob);
+                imageFile.files = dt.files;
+
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    imageView.src = event.target.result;
+                };
+                reader.readAsDataURL(blob);
+
+                submit.disabled = false;
+            }
+        }
+
+        imageFile.onchange = event => {
+            const [file] = imageFile.files
+            if (file) {
+                imageView.src = URL.createObjectURL(file)
+                submit.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>

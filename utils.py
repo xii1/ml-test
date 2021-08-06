@@ -1,15 +1,18 @@
 import base64
 import io
 
+from PIL import Image
+
 
 def convert_image_to_base64(img):
-    data = img.getvalue()
-    data = base64.b64encode(data)
-    return data.decode()
+    img = Image.open(img).convert('RGB')
+    buffered = io.BytesIO()
+    img.save(buffered, format="png")
+    return base64.b64encode(buffered.getvalue()).decode()
 
 
-def convert_plot_to_base64(pyplot):
+def convert_plot_to_base64(plot):
     img = io.BytesIO()
-    pyplot.savefig(img, format='png')
+    plot.savefig(img, format='png')
     img.seek(0)
-    return convert_image_to_base64(img)
+    return base64.b64encode(img.getvalue()).decode()

@@ -6,7 +6,7 @@ model = keras.models.load_model('trained_models/classification/dog_cat.h5')
 
 
 def predict_dog_cat(img):
-    resized_img = Image.open(img).resize((64, 64))
+    resized_img = Image.open(img).convert('RGB').resize((64, 64))
     data = np.array(resized_img)
     data = data / 255
     data = np.expand_dims(data, axis=0)
