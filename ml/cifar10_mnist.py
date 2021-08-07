@@ -66,9 +66,9 @@ def predict_cifar10(img):
     data = np.expand_dims(data, axis=0)
     model = models.load_model(SAVED_MODEL)
     predict = np.squeeze(model.predict(data))
-    predict = np.argmax(predict, axis=-1)
+    index = np.argmax(predict, axis=-1)
 
-    return 'Name: {}'.format(NAME[predict])
+    return 'Name: {} (%1.2f)'.format(NAME[index]) % predict[index]
 
 
 def visualize(data, titles, xlabels, ylabels):

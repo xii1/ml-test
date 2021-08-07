@@ -35,10 +35,6 @@ def train_model():
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size=(2, 2)))
     # model.add(Dropout(0.2))
-    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation=activations.relu))
-    model.add(BatchNormalization())
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    # model.add(Dropout(0.2))
     model.add(Flatten())
     model.add(Dense(128, activation=activations.relu))
     model.add(BatchNormalization())
@@ -57,7 +53,6 @@ def train_model():
 
     return
 
-
 def predict_fashion(img):
     resized_img = Image.open(img).convert('RGB').convert('L').resize((28, 28))
     resized_img = ImageOps.invert(resized_img)
@@ -67,9 +62,9 @@ def predict_fashion(img):
     data = np.expand_dims(data, axis=0)
     model = models.load_model(SAVED_MODEL)
     predict = np.squeeze(model.predict(data))
-    predict = np.argmax(predict, axis=-1)
+    index = np.argmax(predict, axis=-1)
 
-    return 'Name: {}'.format(NAME[predict])
+    return 'Name: {} (%1.2f)'.format(NAME[index]) % predict[index]
 
 
 def visualize(data, titles, xlabels, ylabels):
@@ -90,4 +85,5 @@ def visualize(data, titles, xlabels, ylabels):
     plt.tight_layout()
     plt.show()
 
-# train_model()
+
+train_model()

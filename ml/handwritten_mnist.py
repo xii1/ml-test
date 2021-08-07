@@ -33,10 +33,6 @@ def train_model():
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size=(2, 2)))
     # model.add(Dropout(0.2))
-    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation=activations.relu))
-    model.add(BatchNormalization())
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    # model.add(Dropout(0.2))
     model.add(Flatten())
     model.add(Dense(128, activation=activations.relu))
     model.add(BatchNormalization())
@@ -56,6 +52,52 @@ def train_model():
     return
 
 
+def create_student_mode():
+    model = Sequential()
+    model.add(Conv2D(filters=8, kernel_size=(3, 3), input_shape=(28, 28, 1), activation=activations.relu))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.2))
+    model.add(Flatten())
+    model.add(Dense(32, activation=activations.relu))
+    model.add(BatchNormalization())
+    # model.add(Dropout(0.2))
+    model.add(Dense(NUM_CLASSES, activation=activations.softmax))
+
+    return model
+
+
+def train_student_model():
+    (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+    x_train = x_train.reshape((x_train.shape[0], x_train.shape[1], x_train.shape[2], 1))
+    x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], x_test.shape[2], 1))
+
+    x_train = x_train.astype('float32') / 255
+    x_test = x_test.astype('float32') / 255
+
+    y_train = keras.utils.to_categorical(y_train, NUM_CLASSES)
+    y_test = keras.utils.to_categorical(y_test, NUM_CLASSES)
+
+    model = create_student_mode()
+
+    model.compile(optimizer=optimizers.Adam(), loss=losses.categorical_crossentropy, metrics=['accuracy'])
+    callback = EarlyStopping(monitor="val_loss", mode="min", verbose=1, patience=5, restore_best_weights=True)
+    history = model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=BATCH_SIZE, epochs=20, callbacks=callback)
+
+    visualize([{"train": history.history["loss"], "validate": history.history["val_loss"]},
+               {"train": history.history["accuracy"], "validate": history.history["val_accuracy"]}],
+              ["Model Loss", "Model Accuracy"],
+              ["epoch", "epoch"], ["loss", "accuracy"])
+
+    return
+
+
+def train_student_model_with_teacher_model():
+
+    return
+
+
 def predict_handwritten(img):
     resized_img = Image.open(img).convert('RGB').convert('L').resize((28, 28))
     resized_img = ImageOps.invert(resized_img)
@@ -65,9 +107,9 @@ def predict_handwritten(img):
     data = np.expand_dims(data, axis=0)
     model = models.load_model(SAVED_MODEL)
     predict = np.squeeze(model.predict(data))
-    predict = np.argmax(predict, axis=-1)
+    index = np.argmax(predict, axis=-1)
 
-    return 'Number: {}'.format(predict)
+    return 'Number: {} (%1.2f)'.format(index) % predict[index]
 
 
 def visualize(data, titles, xlabels, ylabels):
@@ -89,4 +131,4 @@ def visualize(data, titles, xlabels, ylabels):
     plt.show()
 
 
-# train_model()
+train_model()
