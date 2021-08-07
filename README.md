@@ -28,6 +28,9 @@ http://localhost:8080/sample/hello
 http://localhost:8080/visual/sample
 http://localhost:8080/visual/water_potability
 http://localhost:8080/classifier/dogcat
+http://localhost:8080/classifier/handwritten
+http://localhost:8080/classifier/fashion
+http://localhost:8080/classifier/cifar10
 ```
 
 ## Run for production

@@ -86,4 +86,4 @@ def visualize(data, titles, xlabels, ylabels):
     plt.show()
 
 
-train_model()
+# train_model()
