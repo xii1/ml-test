@@ -53,6 +53,7 @@ def train_model():
 
     return
 
+
 def predict_fashion(img):
     resized_img = Image.open(img).convert('RGB').convert('L').resize((28, 28))
     resized_img = ImageOps.invert(resized_img)
@@ -84,6 +85,5 @@ def visualize(data, titles, xlabels, ylabels):
 
     plt.tight_layout()
     plt.show()
-
 
 # train_model()
