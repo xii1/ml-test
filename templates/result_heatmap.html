@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Result</title>
+  <style>
+* {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 33%;
+  padding: 10px;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+  </style>
+</head>
+<body>
+<h1>Result</h1>
+<div align="center">
+  <div class="row">
+    <div class="column">
+      <img src="data:image/png;base64,{{img}}" style="width:100%">
+    </div>
+    {%for img_hm in img_heatmaps %}
+    <div class="column">
+      <img src="data:image/png;base64,{{img_hm}}" style="width:100%">
+    </div>
+    {%endfor%}
+  </div>
+  <h3>{{message}}</h3>
+  <a href="">Try again!</a>
+</div>
+</body>
+</html>

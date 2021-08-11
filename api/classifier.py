@@ -5,7 +5,7 @@ from ml.dogcat_classification import predict_dog_cat
 from ml.fashion_mnist import predict_fashion
 from ml.handwritten_mnist import predict_handwritten
 from ml.transfer_learning_classification import predict_image
-from utils import convert_image_to_base64
+from utils import convert_image_to_base64, get_image_with_heatmap_overlay, convert_opencv_image_to_base64
 
 classifier = Blueprint('classifier', __name__)
 
@@ -50,11 +50,18 @@ def recognize_cifar10():
     return render_template('upload.html', url='cifar10')
 
 
-@classifier.route('/dogcat_vgg', methods=['GET', 'POST'])
+@classifier.route('/dogcat_heatmap', methods=['GET', 'POST'])
 def recognize_dog_cat_with_vgg():
     if request.method == 'POST':
         uploaded_file = request.files['file']
         img = convert_image_to_base64(uploaded_file)
-        result = predict_image(uploaded_file)
-        return render_template('result.html', img=img, message=result)
-    return render_template('upload.html', url='dogcat')
+        result, heatmaps = predict_image(uploaded_file)
+
+        img_heatmaps = []
+        for hm in heatmaps:
+            img_hm = get_image_with_heatmap_overlay(uploaded_file, hm)
+            img_hm = convert_opencv_image_to_base64(img_hm)
+            img_heatmaps.append(img_hm)
+
+        return render_template('result_heatmap.html', img=img, img_heatmaps=img_heatmaps, message=result)
+    return render_template('upload.html', url='dogcat_heatmap')

@@ -9,8 +9,10 @@ seaborn
 scikit-learn
 scikit-surprise
 tensorflow
+tf_keras_vis
 pillow
 auto-sklearn
 shap
 ipython
 dill
+opencv-python
