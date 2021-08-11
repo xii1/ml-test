@@ -9,7 +9,7 @@ seaborn
 scikit-learn
 scikit-surprise
 tensorflow
-tf_keras_vis
+tf-keras-vis
 pillow
 auto-sklearn
 shap
