@@ -1,0 +1,17 @@
+flask
+flask_pymongo
+flask-caching
+redis
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+scikit-surprise
+tensorflow
+tf-keras-vis
+pillow
+auto-sklearn
+shap
+ipython
+dill
