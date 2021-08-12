@@ -31,6 +31,7 @@ http://localhost:8080/classifier/dogcat
 http://localhost:8080/classifier/handwritten
 http://localhost:8080/classifier/fashion
 http://localhost:8080/classifier/cifar10
+http://localhost:8080/classifier/dogcat_heatmap
 ```
 
 ## Run for production
